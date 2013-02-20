@@ -1,0 +1,35 @@
+﻿<div style="width: 200px; height: 200px; background: grey" class="wrapper">
+    <div style="width: 200px; height: 200px; background: grey" class="chat-history">
+    </div>
+    <div style="width: 100%; background: lightcyan" class="input-wrapper">
+        <input type="text" id="inputField"/><div style="width: 10px; background: red" id="input-wrapper-send">Send</div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/signalr/hubs"></script>
+<script type="text/javascript">
+
+    $(function () {
+        var myHub = $.connection.rxHub,
+            $inputsendBtn = $('#input-wrapper-send'),
+            $input = $('#inputField');
+
+        var group = window.prompt("What is your group?", "");
+
+
+        myHub.observe('NewMessage').subscribe(function (data) {
+            console.log(data.message);
+            //            if ($.connection.hub.id !== data.Cid) {
+            //                $shape.css({ left: data.X, top: data.Y });
+            //            }
+        });
+
+        $.connection.hub.start().done(function () {
+            myHub.join(group);
+            $inputsendBtn.click(function () {
+                myHub.sendMessage($input.val(), group);
+            });
+        });
+
+    });
+</script>

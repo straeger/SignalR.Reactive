@@ -7,6 +7,11 @@ using SignalR.Infrastructure;
 
 namespace SignalR.Reactive
 {
+    public class RxGroupHelper
+    {
+        public string Grouname { get; set; }
+    }
+
     public static class RxHelper
     {
         public static dynamic GetHubClients<THub>() where THub : Hub, new()
@@ -15,10 +20,17 @@ namespace SignalR.Reactive
             return connectionManager.GetHubContext<THub>().Clients;
         }
 
+
         public static dynamic GetHubClients<THub>(string clientName) where THub : Hub, new()
         {
             var clients = GetHubClients<THub>();
             return GetHubClients(clients, clientName);
+        }
+
+        public static dynamic GetHubClientsByGroup<THub>(string groupName) where THub : Hub, new()
+        {
+            var connectionManager = DependencyResolverContext.Instance.Resolve<IConnectionManager>();
+            return connectionManager.GetHubContext<THub>().Clients.Group(groupName);
         }
 
         public static dynamic GetHubClients(Hub hub, string clientName)
@@ -40,6 +52,12 @@ namespace SignalR.Reactive
         public static void WithClient<THub>(string clientName, Action<dynamic> continueWith) where THub : Hub, new()
         {
             var clients = GetHubClients<THub>(clientName);
+            continueWith(clients);
+        }
+
+        public static void WithClientGroup<THub>(string clientGroup, Action<dynamic> continueWith) where THub : Hub, new()
+        {
+            var clients = GetHubClientsByGroup<THub>(clientGroup);
             continueWith(clients);
         }
 
@@ -71,9 +89,19 @@ namespace SignalR.Reactive
             OnNext(eventName, null, payload);
         }
 
+        public void OnNext<T>(string eventName, T payload, RxGroupHelper group)
+        {
+            OnNext(eventName, null, payload, group);
+        }
+
         public void OnNext<T>(string eventName, string clientName, T payload)
         {
             RxHelper.WithClient<THub>(clientName, clients => RxHelper.RaiseOnNext(eventName, clients, payload));
+        }
+
+        public void OnNext<T>(string eventName, string clientName, T payload, RxGroupHelper group)
+        {
+            RxHelper.WithClientGroup<THub>(group.Grouname, clients => RxHelper.RaiseOnNext(eventName, clients, payload));
         }
 
         public void OnError(string eventName, Exception exception)
@@ -86,6 +114,11 @@ namespace SignalR.Reactive
             RxHelper.WithClient<THub>(clientName, clients => RxHelper.RaiseOnError(eventName, clients, exception));
         }
 
+        public void OnError(string eventName, string clientName, Exception exception, string group)
+        {
+            RxHelper.WithClientGroup<THub>(group, clients => RxHelper.RaiseOnError(eventName, clients, exception));
+        }
+
         public void OnCompleted(string eventName)
         {
             OnCompleted(eventName, null);
@@ -94,6 +127,11 @@ namespace SignalR.Reactive
         public void OnCompleted(string eventName, string clientName)
         {
             RxHelper.WithClient<THub>(clientName, clients => RxHelper.RaiseOnCompleted(eventName, clients));
+        }
+
+        public void OnCompleted(string eventName, string clientName, string group)
+        {
+            RxHelper.WithClientGroup<THub>(group, clients => RxHelper.RaiseOnCompleted(eventName, clients));
         }
     }
 }

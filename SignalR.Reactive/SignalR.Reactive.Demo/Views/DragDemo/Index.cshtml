@@ -7,6 +7,9 @@
         var myHub = $.connection.rxHub,
             $shape = $('#shape');
 
+        var group = window.prompt("What is your group?", "");
+
+
         myHub.observe('ShapeMoved').subscribe(function (data) {
             if ($.connection.hub.id !== data.Cid) {
                 $shape.css({ left: data.X, top: data.Y });
@@ -14,8 +17,9 @@
         });
 
         $.connection.hub.start().done(function () {
+            myHub.join(group);
             $shape.draggable({
-                drag: function() {
+                drag: function () {
                     myHub.moveShape(this.offsetLeft, this.offsetTop || 0);
                 }
             });
