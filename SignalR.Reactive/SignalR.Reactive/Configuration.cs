@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Web.Routing;
 using Microsoft.AspNet.SignalR;
 
 
@@ -17,8 +18,14 @@ namespace SignalR.Reactive
 
             DependencyResolverContext.Instance.EnableRxSupport();
             //ToDo 
+            var config = new HubConfiguration
+                {
+                    EnableDetailedErrors = true
+                }; 
+
+            RouteTable.Routes.MapHubs(config); 
             //AspNetBootstrapper.Initialize();
-            
+
         }
     }
 }
