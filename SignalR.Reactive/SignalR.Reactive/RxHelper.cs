@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SignalR.Hubs;
-using SignalR.Infrastructure;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Infrastructure;
+
 
 namespace SignalR.Reactive
 {
@@ -26,12 +27,12 @@ namespace SignalR.Reactive
         public static dynamic GetHubClientsByGroup<THub>(string groupName) where THub : Hub, new()
         {
             var connectionManager = DependencyResolverContext.Instance.Resolve<IConnectionManager>();
-            return connectionManager.GetHubContext<THub>().Clients[groupName];
+            return connectionManager.GetHubContext<THub>().Clients.Group(groupName);
         }
 
         public static dynamic GetHubClientsByGroup(Hub hub, string groupName)
         {
-            return hub.Clients[groupName];
+            return hub.Clients.Group(groupName);
         }
 
         public static dynamic GetHubClients(Hub hub, string clientName)

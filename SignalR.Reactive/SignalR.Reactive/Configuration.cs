@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
-using SignalR.Hosting.AspNet;
+using Microsoft.AspNet.SignalR;
+
 
 [assembly: PreApplicationStartMethod(typeof(SignalR.Reactive.Configuration), "EnableRxSupport")]
 namespace SignalR.Reactive
@@ -15,7 +16,9 @@ namespace SignalR.Reactive
                 throw new InvalidOperationException("DependenyResolver must be set to an instance of IDependencyResolver");
 
             DependencyResolverContext.Instance.EnableRxSupport();
-            AspNetBootstrapper.Initialize();
+            //ToDo 
+            //AspNetBootstrapper.Initialize();
+            
         }
     }
 }

@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using SignalR.Hubs;
-using SignalR.Infrastructure;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR.Json;
+
 
 namespace SignalR.Reactive
 {
@@ -36,6 +38,11 @@ namespace SignalR.Reactive
         }
 
         public bool IsDebuggingEnabled { get; set; }
+
+        public string GenerateProxy(string serviceUrl)
+        {
+            return GenerateProxy(serviceUrl, false);
+        }
 
         public string GenerateProxy(string serviceUrl, bool includeDocComments = false)
         {
@@ -89,7 +96,7 @@ namespace SignalR.Reactive
             sb.AppendFormat("signalR.{0} = {{", GetHubName(descriptor)).AppendLine();
             sb.AppendFormat("        _: {{").AppendLine();
             sb.AppendFormat("            hubName: '{0}',", descriptor.Name ?? "null").AppendLine();
-            sb.AppendFormat("            ignoreMembers: [{0}],", Commas(members, m => "'" + Json.CamelCase(m) + "'")).AppendLine();
+            sb.AppendFormat("            ignoreMembers: [{0}],", Commas(members, m => "'" + JsonUtility.CamelCase(m) + "'")).AppendLine();
             sb.AppendLine("            connection: function () { return signalR.hub; }");
             sb.AppendFormat("        }}");
 
@@ -118,7 +125,7 @@ namespace SignalR.Reactive
 
         protected virtual string GetHubName(HubDescriptor descriptor)
         {
-            return Json.CamelCase(descriptor.Name);
+            return JsonUtility.CamelCase(descriptor.Name);
         }
 
         private IEnumerable<MethodDescriptor> GetMethods(HubDescriptor descriptor)
@@ -139,7 +146,7 @@ namespace SignalR.Reactive
             if (includeDocComments)
             {
                 sb.AppendFormat("            /// <summary>Calls the {0} method on the server-side {1} hub.&#10;Returns a jQuery.Deferred() promise.</summary>", method.Name, method.Hub.Name).AppendLine();
-                var parameterDoc = method.Parameters.Select(p => String.Format("            /// <param name=\"{0}\" type=\"{1}\">Server side type is {2}</param>", p.Name, MapToJavaScriptType(p.Type), p.Type)).ToList();
+                var parameterDoc = method.Parameters.Select(p => String.Format("            /// <param name=\"{0}\" type=\"{1}\">Server side type is {2}</param>", p.Name, MapToJavaScriptType(p.ParameterType), p.ParameterType)).ToList();
                 if (parameterDoc.Any())
                 {
                     sb.AppendLine(String.Join(Environment.NewLine, parameterDoc));
@@ -151,7 +158,7 @@ namespace SignalR.Reactive
 
         private void GenerateRxSubject(StringBuilder sb, HubDescriptor descriptor)
         {
-            var hubName = Json.CamelCase(descriptor.Name);
+            var hubName = JsonUtility.CamelCase(descriptor.Name);
             sb.AppendFormat("            ,").AppendLine();
             sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
             sb.AppendFormat("            subjectOnNext: function(value) {{ signalR.{0}.subject.onNext(value); }},", hubName).AppendLine();
@@ -198,7 +205,7 @@ namespace SignalR.Reactive
 
         private static string GetMethodName(MethodDescriptor method)
         {
-            return Json.CamelCase(method.Name);
+            return JsonUtility.CamelCase(method.Name);
         }
 
         private static string Commas(IEnumerable<string> values)
@@ -221,5 +228,6 @@ namespace SignalR.Reactive
                 }
             }
         }
+
     }
 }
