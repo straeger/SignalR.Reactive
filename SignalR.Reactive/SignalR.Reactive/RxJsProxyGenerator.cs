@@ -168,11 +168,11 @@ namespace SignalR.Reactive
             var hubName = JsonUtility.CamelCase(descriptor.Name);
             sb.AppendFormat(",").AppendLine();
             sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
-            sb.AppendFormat("            subjectOnNext: function(value) {{ signalR.{0}.subject.onNext(value); }},", hubName).AppendLine();
+            sb.AppendFormat("            subjectOnNext: function(value) {{ signalR.{0}.server.subject.onNext(value); }},", hubName).AppendLine();
 
             sb.AppendFormat("            observe: function (eventName) {{ ").AppendLine();
             sb.AppendFormat("                                return Rx.Observable.createWithDisposable(function (obs) {{ ").AppendLine();
-            sb.AppendFormat("                                                var disposable = signalR.{0}.subject ", hubName).AppendLine();
+            sb.AppendFormat("                                                var disposable = signalR.{0}.server.subject ", hubName).AppendLine();
             sb.AppendFormat("                                                    .asObservable() ").AppendLine();
             sb.AppendFormat("                                                    .where(function (x) {{ return x.EventName.toLowerCase() === eventName.toLowerCase(); }}) ").AppendLine();
             sb.AppendFormat("                                                    .subscribe(function (x) {{ ").AppendLine();
