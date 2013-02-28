@@ -95,7 +95,11 @@ namespace SignalR.Reactive
             var hubName = GetDescriptorName(descriptor);
 
             sb.AppendFormat("    proxies.{0} = this.createHubProxy('{1}'); ", hubName, hubName).AppendLine();
-            sb.AppendFormat("        proxies.{0}.client = {{ }};", hubName).AppendLine();
+            sb.AppendFormat("        proxies.{0}.client = {{ ", hubName);
+            GenerateClientRxStuff(sb, descriptor);
+            sb.AppendLine();
+            sb.Append("        };");
+
             sb.AppendFormat("        proxies.{0}.server = {{", hubName);
 
             bool first = true;
@@ -109,8 +113,8 @@ namespace SignalR.Reactive
                 GenerateMethod(sb, method, includeDocComments, hubName);
                 first = false;
             }
-
-            GenerateRxSubject(sb, descriptor);
+            GenerateServerRxSubject(sb, descriptor);
+            
 
             sb.AppendLine();
             sb.Append("        }");
@@ -163,16 +167,13 @@ namespace SignalR.Reactive
             sb.Append("             }");
         }
 
-        private static void GenerateRxSubject(StringBuilder sb, HubDescriptor descriptor)
+        private static void GenerateServerRxSubject(StringBuilder sb, HubDescriptor descriptor)
         {
             var hubName = JsonUtility.CamelCase(descriptor.Name);
             sb.AppendFormat(",").AppendLine();
-            sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
-            sb.AppendFormat("            subjectOnNext: function(value) {{ signalR.{0}.server.subject.onNext(value); }},", hubName).AppendLine();
-
             sb.AppendFormat("            observe: function (eventName) {{ ").AppendLine();
             sb.AppendFormat("                                return Rx.Observable.createWithDisposable(function (obs) {{ ").AppendLine();
-            sb.AppendFormat("                                                var disposable = signalR.{0}.server.subject ", hubName).AppendLine();
+            sb.AppendFormat("                                                var disposable = signalR.{0}.client.subject ", hubName).AppendLine();
             sb.AppendFormat("                                                    .asObservable() ").AppendLine();
             sb.AppendFormat("                                                    .where(function (x) {{ return x.EventName.toLowerCase() === eventName.toLowerCase(); }}) ").AppendLine();
             sb.AppendFormat("                                                    .subscribe(function (x) {{ ").AppendLine();
@@ -183,6 +184,17 @@ namespace SignalR.Reactive
             sb.AppendFormat("                                                return disposable; ").AppendLine();
             sb.AppendFormat("                                 }}); ").AppendLine();
             sb.AppendFormat("                             }} ").AppendLine();
+        }
+
+        private static void GenerateClientRxStuff(StringBuilder sb, HubDescriptor descriptor)
+        {
+            var hubName = JsonUtility.CamelCase(descriptor.Name);
+            //sb.AppendFormat(",").AppendLine();
+            sb.AppendFormat("").AppendLine();
+            sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
+            sb.AppendFormat("            subjectOnNext: function(value) {{").AppendLine();
+            sb.AppendFormat("                   signalR.{0}.client.subject.onNext(value);", hubName).AppendLine();
+            sb.AppendFormat("               }}").AppendLine();
         }
 
 
