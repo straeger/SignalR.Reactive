@@ -14,7 +14,7 @@ namespace SignalR.Reactive
         public static dynamic GetHubClients<THub>() where THub : Hub, new()
         {
             var connectionManager = DependencyResolverContext.Instance.Resolve<IConnectionManager>();
-            return connectionManager.GetHubContext<THub>().Clients;
+            return connectionManager.GetHubContext<THub>().Clients.All;
         }
 
 
@@ -42,7 +42,7 @@ namespace SignalR.Reactive
 
         public static dynamic GetHubClients(dynamic clients, string clientName)
         {
-            return string.IsNullOrEmpty(clientName) ? clients : clients[clientName];
+            return string.IsNullOrEmpty(clientName) ? clients.All : clients[clientName];
         }
 
         public static void WithClient(Hub hub, string clientName, Action<dynamic> continueWith)

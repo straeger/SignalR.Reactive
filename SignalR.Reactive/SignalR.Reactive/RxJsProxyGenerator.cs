@@ -189,7 +189,6 @@ namespace SignalR.Reactive
         private static void GenerateClientRxStuff(StringBuilder sb, HubDescriptor descriptor)
         {
             var hubName = JsonUtility.CamelCase(descriptor.Name);
-            //sb.AppendFormat(",").AppendLine();
             sb.AppendFormat("").AppendLine();
             sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
             sb.AppendFormat("            subjectOnNext: function(value) {{").AppendLine();
