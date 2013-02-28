@@ -99,7 +99,7 @@ namespace SignalR.Reactive
             GenerateClientRxStuff(sb, descriptor);
             sb.AppendLine();
             sb.Append("        };");
-
+            sb.AppendLine();
             sb.AppendFormat("        proxies.{0}.server = {{", hubName);
 
             bool first = true;
@@ -192,8 +192,8 @@ namespace SignalR.Reactive
             sb.AppendFormat("").AppendLine();
             sb.AppendFormat("            subject : $.extend(new Rx.Subject(), {{toJSON: function() {{}}}}),").AppendLine();
             sb.AppendFormat("            subjectOnNext: function(value) {{").AppendLine();
-            sb.AppendFormat("                   signalR.{0}.client.subject.onNext(value);", hubName).AppendLine();
-            sb.AppendFormat("               }}").AppendLine();
+            sb.AppendFormat("                                           signalR.{0}.client.subject.onNext(value);", hubName).AppendLine();
+            sb.AppendFormat("                       }}").AppendLine();
         }
 
 
