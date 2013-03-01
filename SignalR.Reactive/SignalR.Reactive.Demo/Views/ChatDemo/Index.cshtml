@@ -118,16 +118,16 @@ body{
         var $li = $('<li>').text(group);
         $groupsList.append($li);
 
-        myHub.observe('NewMessage').subscribe(function (message) {
+        myHub.server.observe('NewMessage').subscribe(function (message) {
             window.console && console.log(message);
             var $li = $('<li>').text(message);
-            $messageList.append($li)
+            $messageList.append($li);
         });
 
         $.connection.hub.start().done(function () {
-            myHub.join(group);
+            myHub.server.join(group);
             $inputsendBtn.click(function () {
-                myHub.sendMessage($input.val(), group);
+                myHub.server.sendMessage($input.val(), group);
                 $input.val('');
             });
         });

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
-using SignalR.Hosting.AspNet;
-using SignalR.Hubs;
-using SignalR.Infrastructure;
+using Microsoft.AspNet.SignalR;
+
 
 namespace SignalR.Reactive
 {

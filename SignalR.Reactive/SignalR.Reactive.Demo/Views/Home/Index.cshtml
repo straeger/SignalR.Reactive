@@ -8,7 +8,7 @@
 
     $(function () {
         var myHub = $.connection.rxHub;
-        myHub.observe('SomeValue').subscribe(function (x) {
+        myHub.server.observe('SomeValue').subscribe(function (x) {
             $('#counter').html(x);
         });
         $.connection.hub.start();
@@ -17,7 +17,7 @@
 
         $('#button').click(function () {
             $('#button').attr('disabled', true);
-            myHub.observe(guid)
+            myHub.server.observe(guid)
                 .subscribe(function (log) {
                     $('#operationLog').append(log);
                     $('#operationLog').append('<br>');

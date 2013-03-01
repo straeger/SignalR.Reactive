@@ -7,7 +7,7 @@
         var myHub = $.connection.rxHub,
             $shape = $('#shape');
 
-        myHub.observe('ShapeMoved').subscribe(function (data) {
+        myHub.server.observe('ShapeMoved').subscribe(function (data) {
             if ($.connection.hub.id !== data.Cid) {
                 $shape.css({ left: data.X, top: data.Y });
             }
@@ -16,7 +16,7 @@
         $.connection.hub.start().done(function () {
             $shape.draggable({
                 drag: function () {
-                    myHub.moveShape(this.offsetLeft, this.offsetTop || 0);
+                    myHub.server.moveShape(this.offsetLeft, this.offsetTop || 0);
                 }
             });
         });

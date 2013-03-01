@@ -2,7 +2,8 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using SignalR.Hubs;
+using Microsoft.AspNet.SignalR;
+
 
 namespace SignalR.Reactive.Demo.Models
 {

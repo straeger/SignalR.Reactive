@@ -36,14 +36,14 @@ namespace SignalR.Reactive.Demo
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
-
+            
             //HOT STUFF
             //We have a serverside IObservable<string> that gets published on the client side
 
-            Observable
-                .Interval(TimeSpan.FromSeconds(1))
-                .Select(_ => DateTime.Now.ToLongTimeString())
-                .ToClientside().Observable<RxHub>("SomeValue");
+            //Observable
+            //    .Interval(TimeSpan.FromSeconds(1))
+            //    .Select(_ => DateTime.Now.ToLongTimeString())
+            //    .ToClientside().Observable<RxHub>("SomeValue");
         }
 
     }
