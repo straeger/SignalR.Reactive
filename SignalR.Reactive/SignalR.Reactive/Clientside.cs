@@ -31,7 +31,6 @@ namespace SignalR.Reactive
                 () => RxHelper.RaiseOnCompleted(eventName, clients)
                 );
         }
-        
     }
 
     public static class SignalRObservableExtensions
