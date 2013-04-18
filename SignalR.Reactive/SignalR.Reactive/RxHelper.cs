@@ -42,7 +42,7 @@ namespace SignalR.Reactive
 
         public static dynamic GetHubClients(dynamic clients, string clientName)
         {
-            return string.IsNullOrEmpty(clientName) ? clients.All : clients[clientName];
+            return string.IsNullOrEmpty(clientName) ? clients.All : clients.Client[clientName];
         }
 
         public static void WithClient(Hub hub, string clientName, Action<dynamic> continueWith)

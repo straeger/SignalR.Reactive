@@ -23,7 +23,7 @@ namespace SignalR.Reactive
         {
             dynamic clients = RxHelper.GetHubClients<THub>();
 
-            clients = string.IsNullOrEmpty(clientName) ? clients : clients[clientName];
+            clients = string.IsNullOrEmpty(clientName) ? clients : clients.client[clientName];
 
             return _observable.Subscribe(
                 x => RxHelper.RaiseOnNext(eventName, clients, x),
