@@ -13,6 +13,12 @@
             }
         });
 
+        myHub.server.observe('ShapeMovedEcho').subscribe(function (data) {
+            console.log('Echo Event from Server .');
+        });
+
+        
+
         $.connection.hub.start().done(function () {
             $shape.draggable({
                 drag: function () {

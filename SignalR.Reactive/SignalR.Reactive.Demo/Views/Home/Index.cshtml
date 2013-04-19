@@ -29,7 +29,7 @@
                     $('#operationLog').append('<br>');
                     $('#button').attr('disabled', false);
                 });
-            $.get('/Home/DoALongRunningOperation/' + guid);
+            $.get('/Home/DoALongRunningOperation/?id=' + guid + '&connectionId=' + myHub.connection.id);
         });
 
     });

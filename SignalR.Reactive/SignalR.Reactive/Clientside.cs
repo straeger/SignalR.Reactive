@@ -21,9 +21,8 @@ namespace SignalR.Reactive
 
         public IDisposable Observable<THub>(string eventName, string clientName) where THub : Hub, new()
         {
-            dynamic clients = RxHelper.GetHubClients<THub>();
 
-            clients = string.IsNullOrEmpty(clientName) ? clients : clients.client[clientName];
+            dynamic clients = string.IsNullOrEmpty(clientName) ? RxHelper.GetHubClients<THub>() : RxHelper.GetHubClient<THub>(clientName);
 
             return _observable.Subscribe(
                 x => RxHelper.RaiseOnNext(eventName, clients, x),

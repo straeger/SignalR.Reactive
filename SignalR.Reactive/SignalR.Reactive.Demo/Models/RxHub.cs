@@ -18,7 +18,14 @@ namespace SignalR.Reactive.Demo.Models
 
         public void MoveShape(int x, int y)
         {
-            this.RaiseOnNext("ShapeMoved", new
+            this.RaiseOnNext("ShapeMoved",new
+            {
+                Cid = Context.ConnectionId,
+                X = x,
+                Y = y
+            });
+
+            this.RaiseOnNext("ShapeMovedEcho", Context.ConnectionId, new
             {
                 Cid = Context.ConnectionId,
                 X = x,

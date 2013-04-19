@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using SignalR.Reactive.Demo.Models;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace SignalR.Reactive.Demo.Controllers
 {
@@ -13,7 +15,7 @@ namespace SignalR.Reactive.Demo.Controllers
             return View();
         }
 
-        public void DoALongRunningOperation(string id)
+        public void DoALongRunningOperation(string id, string connectionId)
         {
             var subject = new Subject<string>();
 
@@ -28,8 +30,8 @@ namespace SignalR.Reactive.Demo.Controllers
                 subject.OnNext("Almost done");
                 subject.OnCompleted();
             });
-
-            subject.ToClientside().Observable<RxHub>(id);
+            
+            subject.ToClientside().Observable<RxHub>(id, connectionId);
         }
     }
 }
